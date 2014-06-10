@@ -1,16 +1,22 @@
 require './board.rb'
+require 'debugger'
+require './pieces.rb'
 
 class Piece
   
   attr_accessor :board, :position, :color
+  DIAGONALS =  [ [-1, -1], [-1, 1], [1, -1], [1, 1] ]
+  HORVERTS = [ [0, -1], [0, 1], [-1, 0], [1, 0] ]
   
-  def initialize(board,position,color)
+  
+  def initialize(board, position, color)
     @board = board
     @position = position
     @color = color
   end
   
-  def possible_moves
+  def self.max_distance
+    @max_distance
   end
   
   def move(pos)
@@ -24,25 +30,16 @@ class Piece
   def in_board?(x, y)
     (0..7).include?(x) && (0..7).include?(y)
   end
-  
-  DIAGONALS =  [ [-1, -1], [-1, 1], [1, -1], [1, 1] ]
-  HORVERTS = [ [0, -1], [0, 1], [-1, 0], [1, 0] ]
-  
-  def to_s
-    if self.is_a?(Rook)
-      "R"
-    elsif self.is_a?(Bishop)
-      "B"
-    elsif self.is_a?(King)
-      "K"
-    end
-  end
 
+  def dup(board)
+    self.class.new(board, @position, @color)
+  end
+  
   def possible_moves
     positions = []
     move_dirs.each do |direction| 
       distance = 1
-      while distance <= MAX_DISTANCE
+      while distance <= self.class.max_distance
         new_x = @position[0] + (direction[0] * distance) 
         new_y = @position[1] + (direction[1] * distance) 
         if !in_board?(new_x, new_y)
@@ -61,63 +58,20 @@ class Piece
     positions
   end
   
-end
-
-
-class SlidingPieces < Piece
-  MAX_DISTANCE = 8
-end
-
-class Bishop < SlidingPieces
-  def move_dirs
-    DIAGONALS
-  end
-end
-
-class Rook < SlidingPieces
-  def move_dirs
-    HORVERTS
-  end
-end
-
-class Queen < SlidingPieces
-  def move_dirs
-    DIAGONALS + HORVERTS
-  end
-end
-
-class SteppingPiece < Piece
-  
-  def possible_moves
-    positions = []
-    move_dirs.each do |direction|
-      new_x = @position[0] + (direction[0]) 
-      new_y = @position[1] + (direction[1]) 
-      if !in_board?(new_x, new_y)
-        break
-      elsif @board[new_x, new_y].nil?
-        positions << [new_x, new_y]
-      elsif @board.diff_color(@position, [new_x, new_y])
-        position << [new_x, new_y]
-      end
+  def valid_moves
+    possible_moves.select do |pos|
+      is_valid?(pos)
     end
-    positions
+  end  
+  
+  def is_valid?(pos)
+    test_board = @board.dup
+    duplicate_piece = test_board[@position]
+    duplicate_piece.move(pos)
+    !test_board.in_check?(@color)
   end
   
 end
 
-
-class King < SteppingPiece
-  def move_dirs
-    DIAGONALS + HORVERTS
-  end
-  
-end
-
-class Knight < SteppingPiece
-  def move_dirs
-    [ [-2, -1], [2, -1], [-2, 1], [2, 1], [-1, -2], [1, -2], [-1, 2], [1, 2]]
-  end
-end
 
 
