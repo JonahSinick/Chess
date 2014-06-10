@@ -12,9 +12,28 @@ class Board
     @board[0][0] = Rook.new(self, [0,0], :black)
     @board[0][1] = Knight.new(self, [0,1], :black)
     @board[0][2] = Bishop.new(self, [0,2], :black)    
-    @board[0][3] = King.new(self, [0,3], :black)  
-    @board[0][4] = Queen.new(self, [0,4], :black)      
+    @board[0][4] = King.new(self, [0,4], :black)  
+    @board[0][3] = Queen.new(self, [0,3], :black)      
+    @board[0][5] = Bishop.new(self, [0,5], :black)      
+    @board[0][6] = Knight.new(self, [0,6], :black)      
+    @board[0][7] = Rook.new(self, [7,7], :black)      
+    @board[7][0] = Rook.new(self, [7,0], :white)
+    @board[7][1] = Knight.new(self, [7,1], :white)
+    @board[7][2] = Bishop.new(self, [7,2], :white)    
+    @board[7][4] = King.new(self, [7,4], :white)  
+    @board[7][3] = Queen.new(self, [7,3], :white)      
+    @board[7][5] = Bishop.new(self, [7,5], :white)      
+    @board[7][6] = Knight.new(self, [7,6], :white)      
     @board[7][7] = Rook.new(self, [7,7], :white)
+    [1,6].each do |row|
+      (0..7).each do |col|
+        if row == 1
+          @board[1][col] = Pawn.new(self,[1,col],:black)
+        elsif row == 6
+          @board[6][col] = Pawn.new(self,[6,col],:white)
+        end
+      end
+    end          
   end
   
   def []=(pos, obj)
