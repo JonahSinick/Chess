@@ -67,7 +67,11 @@ class Human
 end
 
 if __FILE__ == $PROGRAM_NAME
-  Game.new.board.show
+  if ARGV.empty?
+    Game.new.board.show
+  else
+    Game.new.play
+  end
 end
   
   

@@ -8,7 +8,7 @@ class Piece
   DIAGONALS =  [ [-1, -1], [-1, 1], [1, -1], [1, 1] ]
   HORVERTS = [ [0, -1], [0, 1], [-1, 0], [1, 0] ]
   
-  
+
   def initialize(board, position, color, window)
     @board = board
     @position = position
