@@ -19,7 +19,7 @@ class Window < Gosu::Window
   
   def update
     #debugger
-    puts "from: #{@from_pos} to: #{@to_pos}"
+    #puts "from: #{@from_pos} to: #{@to_pos}"
   end
   
   def button_down(id)
@@ -29,7 +29,7 @@ class Window < Gosu::Window
        @from_pos = pos
         @message = "Selected position: " +
         "#{@board[@from_pos].class.to_s.downcase} #{to_chess(@from_pos)}"
-    elsif !@from_pos.nil? && @board[@from_pos].is_valid?(pos)
+    elsif !@from_pos.nil? && @board[@from_pos].valid_moves.include?(pos)
       @board[@from_pos].move(pos)
       @game.change_player
       @from_pos = nil      
@@ -43,9 +43,9 @@ class Window < Gosu::Window
     @background_image.draw(0, 0, 0)
     @board.draw
     if @game.current_player.color == :white
-      @white_banner.draw(0.2, 636, 0)
+      @white_banner.draw(0, 636, 0)
     else
-      @black_banner.draw(0.2, 636, 0.1)
+      @black_banner.draw(0, 636, 0)
     end
     @text.draw( @message, 262, 672, 1)
   end

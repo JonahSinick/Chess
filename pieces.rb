@@ -141,14 +141,8 @@ class Pawn < Piece
   end
   
   def move(pos)
-    #debugger
-    if self.possible_moves.include?(pos)
-      @board[@position] = nil
-      @position = pos
-      @board[pos] = self
-      @at_initial_position = false
-      nil
-    end
+    super
+    @at_initial_position = false
   end
   
   def possible_moves
