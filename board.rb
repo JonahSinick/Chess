@@ -1,12 +1,24 @@
-load './piece.rb'
+require './piece.rb'
 require 'debugger'
+require 'gosu'
 
 class Board
   attr_accessor :board
-  def initialize
+  def initialize(window)
     @board = Array.new(8) { Array.new(8) }
+    @window = window
     place_pieces
-    create_chess_columns
+    create_chess_columns        
+  end
+  
+  def draw
+    @board.flatten.each do |tile|
+      tile.draw unless tile.nil?
+    end
+  end
+  
+  def show
+    @window.show
   end
   
   CHESS_COLUMNS = {}
@@ -24,28 +36,28 @@ class Board
     
   
   def place_pieces
-    @board[0][0] = Rook.new(self, [0,0], :black)
-    @board[0][1] = Knight.new(self, [0,1], :black)
-    @board[0][2] = Bishop.new(self, [0,2], :black)    
-    @board[0][4] = King.new(self, [0,4], :black)  
-    @board[0][3] = Queen.new(self, [0,3], :black)      
-    @board[0][5] = Bishop.new(self, [0,5], :black)      
-    @board[0][6] = Knight.new(self, [0,6], :black)      
-    @board[0][7] = Rook.new(self, [7,7], :black)      
-    @board[7][0] = Rook.new(self, [7,0], :white)
-    @board[7][1] = Knight.new(self, [7,1], :white)
-    @board[7][2] = Bishop.new(self, [7,2], :white)    
-    @board[7][4] = King.new(self, [7,4], :white)  
-    @board[7][3] = Queen.new(self, [7,3], :white)      
-    @board[7][5] = Bishop.new(self, [7,5], :white)      
-    @board[7][6] = Knight.new(self, [7,6], :white)      
-    @board[7][7] = Rook.new(self, [7,7], :white)
-    [1,6].each do |row|
+    @board[0][0] = Rook.new(self, [0,0], :black, @window)
+    @board[0][1] = Knight.new(self, [0,1], :black, @window)
+    @board[0][2] = Bishop.new(self, [0,2], :black, @window)    
+    @board[0][4] = King.new(self, [0,4], :black, @window)
+    @board[0][3] = Queen.new(self, [0,3], :black, @window)     
+    @board[0][5] = Bishop.new(self, [0,5], :black, @window)      
+    @board[0][6] = Knight.new(self, [0,6], :black, @window)      
+    @board[0][7] = Rook.new(self, [0,7], :black, @window)    
+    @board[7][0] = Rook.new(self, [7,0], :white, @window)
+    @board[7][1] = Knight.new(self, [7,1], :white, @window)
+    @board[7][2] = Bishop.new(self, [7,2], :white, @window)    
+    @board[7][4] = King.new(self, [7,4], :white, @window) 
+    @board[7][3] = Queen.new(self, [7,3], :white, @window)      
+    @board[7][5] = Bishop.new(self, [7,5], :white, @window)      
+    @board[7][6] = Knight.new(self, [7,6], :white, @window)      
+    @board[7][7] = Rook.new(self, [7,7], :white, @window)
+    [1,6].each do |row|                          
       (0..7).each do |col|
         if row == 1
-          @board[1][col] = Pawn.new(self,[1,col],:black)
+          @board[1][col] = Pawn.new(self,[1,col],:black, @window)
         elsif row == 6
-          @board[6][col] = Pawn.new(self,[6,col],:white)
+          @board[6][col] = Pawn.new(self,[6,col],:white, @window)
         end
       end
     end          

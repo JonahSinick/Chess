@@ -1,12 +1,17 @@
 require './board.rb'
+require './fancy_board.rb'
+require 'debugger'
 
 class Game
-  attr_accessor :board
+  attr_accessor :board, :current_player
   def initialize(player1 = Human.new(:white), player2 = Human.new(:black))
     @player1 = player1
     @player2 = player2
-    @board = Board.new
+    #debugger
+    @window = Window.new(self)
+    @board = Board.new(@window)
     @current_player = @player1
+    @window.board = @board    
   end
   
   def play
@@ -16,6 +21,11 @@ class Game
     end
     puts "Game over, #{@board.checkmate?} loses"
   end
+  
+  def change_player
+    @current_player = ( @current_player == @player1 ? @player2 : @player1 )
+  end
+  
 end
 
 class Human

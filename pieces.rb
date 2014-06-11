@@ -1,8 +1,16 @@
-require "./piece.rb"
+load "./piece.rb"
 require "colorize"
 require 'debugger'
 class Bishop < Piece
   @max_distance = 8
+
+  def initialize(board, position, color, window)
+    @board = board
+    @position = position
+    @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "b.png",false)
+  end
+  
   def move_dirs
     DIAGONALS
   end
@@ -17,6 +25,14 @@ end
 
 class Rook < Piece
   @max_distance = 8
+  
+  def initialize(board, position, color, window)
+    @board = board
+    @position = position
+    @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "r.png",false)
+  end
+  
   def move_dirs
     HORVERTS
   end
@@ -32,6 +48,14 @@ end
 
 class Queen < Piece
   @max_distance = 8
+  
+  def initialize(board, position, color, window)
+    @board = board
+    @position = position
+    @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "q.png",false)
+  end
+  
   def move_dirs
     DIAGONALS + HORVERTS
   end
@@ -48,6 +72,14 @@ end
 
 class King < Piece
   @max_distance = 1
+
+  def initialize(board, position, color, window)
+    @board = board
+    @position = position
+    @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "k.png",false)
+  end
+  
   def move_dirs
     DIAGONALS + HORVERTS
   end
@@ -62,7 +94,15 @@ class King < Piece
 end
 
 class Knight < Piece
-  @max_distance = 1  
+  @max_distance = 1
+  
+  def initialize(board, position, color, window)
+    @board = board
+    @position = position
+    @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "n.png",false)
+  end
+    
   def move_dirs
     [ [-2, -1], [2, -1], [-2, 1], [2, 1], [-1, -2], [1, -2], [-1, 2], [1, 2]]
   end
@@ -78,10 +118,12 @@ end
 
 class Pawn < Piece
   
-  def initialize(board, position, color)
+  
+  def initialize(board, position, color, window)
     @board = board
     @position = position
     @color = color
+    @image =  Gosu::Image.new(window, color.to_s[0] + "p.png",false)
     @at_initial_position = true
     @direction = (color == :black ? 1 : -1)
   end

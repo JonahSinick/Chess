@@ -9,10 +9,11 @@ class Piece
   HORVERTS = [ [0, -1], [0, 1], [-1, 0], [1, 0] ]
   
   
-  def initialize(board, position, color)
+  def initialize(board, position, color, window)
     @board = board
     @position = position
     @color = color
+    @image =  Gosu::Image.new(window, "nil.png",false)
   end
   
   def self.max_distance
@@ -71,6 +72,17 @@ class Piece
     !test_board.in_check?(@color)
   end
   
+  def draw
+    @image.draw(pix_x, pix_y, 1)
+  end
+  
+  def pix_x
+    @position[1] * 80 + 8
+  end
+  
+  def pix_y
+    @position[0] * 80 + 8
+  end
 end
 
 
