@@ -30,7 +30,9 @@ class Rook < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "r.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "r.png",false)
+    end
   end
   
   def move_dirs
@@ -53,7 +55,9 @@ class Queen < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "q.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "q.png",false)
+    end
   end
   
   def move_dirs
@@ -77,7 +81,9 @@ class King < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "k.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "k.png",false)
+    end
   end
   
   def move_dirs
@@ -100,7 +106,9 @@ class Knight < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "n.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "n.png",false)
+    end
   end
     
   def move_dirs
@@ -123,7 +131,9 @@ class Pawn < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "p.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "p.png",false)
+    end
     @at_initial_position = true
     @direction = (color == :black ? 1 : -1)
   end

@@ -13,7 +13,7 @@ class Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, "nil.png",false)
+    @image =  Gosu::Image.new(window, "nil.png",false) unless window.nil?
   end
   
   def self.max_distance
@@ -21,7 +21,7 @@ class Piece
   end
   
   def move(pos)
-    if self.possible_moves.include?(pos)
+    if self.valid_moves.include?(pos)
       @board[@position] = nil
       @position = pos
       @board[pos] = self
@@ -33,7 +33,7 @@ class Piece
   end
 
   def dup(board)
-    self.class.new(board, @position, @color)
+    self.class.new(board, @position, @color, board.window)
   end
   
   def possible_moves

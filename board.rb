@@ -105,7 +105,7 @@ class Board
   end 
   
   def dup
-    new_board = Board.new
+    new_board = Board.new(nil)
     dupped_board = Array.new(8) { Array.new(8) }
     (0..7).each do |row|
       (0..7).each do |col|
