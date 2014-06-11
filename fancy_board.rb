@@ -28,7 +28,7 @@ class Window < Gosu::Window
     else
       @to_pos = pixel_to_board(self.mouse_x, self.mouse_y)  
       @board[@from_pos].move(@to_pos) unless @board[@from_pos].nil?
-      @game.current_player == :white
+      @game.change_player
       @to_pos = nil
       @from_pos = nil
     end

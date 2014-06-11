@@ -8,7 +8,9 @@ class Bishop < Piece
     @board = board
     @position = position
     @color = color
-    @image =  Gosu::Image.new(window, color.to_s[0] + "b.png",false)
+    if !window.nil?
+      @image =  Gosu::Image.new(window, color.to_s[0] + "b.png",false)
+    end
   end
   
   def move_dirs

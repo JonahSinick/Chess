@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require './board.rb'
 require './fancy_board.rb'
 require 'debugger'
@@ -63,5 +64,13 @@ class Human
   end
   
 end
+
+if __FILE__ == $PROGRAM_NAME
+  Game.new.board.show
+end
+  
+  
+  
+  
 
   

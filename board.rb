@@ -3,7 +3,7 @@ require 'debugger'
 require 'gosu'
 
 class Board
-  attr_accessor :board
+  attr_accessor :board, :window
   def initialize(window)
     @board = Array.new(8) { Array.new(8) }
     @window = window
