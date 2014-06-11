@@ -14,6 +14,7 @@ class Piece
     @position = position
     @color = color
     @image =  Gosu::Image.new(window, "nil.png",false) unless window.nil?
+    @window = window
     @value = nil
   end
   

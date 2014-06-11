@@ -110,6 +110,17 @@ class Computer
     piece.move(move)    
   end
   
+  def check_move(board)
+    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+    valid_pieces.each do |piece|
+      board.pieces(other_color).each do |enemy_piece|
+        if piece.valid_moves.include?(enemy_piece.position)
+          potential_moves << [piece, enemy_piece.position]
+        end
+      end
+    
+    
+  
   if __FILE__ == $PROGRAM_NAME
     if ARGV.empty?
       Game.new.board.show

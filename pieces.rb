@@ -137,6 +137,7 @@ class Pawn < Piece
     @board = board
     @position = position
     @color = color
+    @window = window
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "p.png",false)
     end
@@ -148,7 +149,30 @@ class Pawn < Piece
   def move(pos)
     super
     @at_initial_position = false
+    if @color == :white && @position[0] == 0
+      promote
+    end
+    if @color == :black && @position[0] == 7
+      promote
+    end
   end
+  
+  
+  def promote
+    p = "Q" #["N","B","R","Q"].sample
+    if p == "N" #for now
+      @board[@position] = Knight.new(@board, @position, @color, @window)
+    elsif p == "B"
+      @board[@position] = Bishop.new(@board, @position, @color, @window)
+    elsif p == "R"
+      @board[@position] = Rook.new(@board, @position, @color, @window)
+    elsif p == "Q"
+      @board[@position] = Queen.new(@board, @position, @color, @window)
+    else
+      puts "That's not a valid piece name! Enter 'N', 'B', 'R' or 'Q'"
+    end
+  end
+  
   
   def possible_moves
     #debugger
