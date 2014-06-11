@@ -5,7 +5,7 @@ require 'debugger'
 
 class Window < Gosu::Window
   attr_accessor :knight, :board
-  def initialize(game)
+  def initialize(game, computer_playing = false)
     super(640, 700, false, 100)
     
     @background_image = Gosu::Image.new(self, "board.png", true)
@@ -15,11 +15,16 @@ class Window < Gosu::Window
     @game = game
     @text = Gosu::Font.new(self, 'Verdana', 21)
     @message = "Selected position: "
+    @computer_playing = computer_playing
+    @computer_turn = false
   end
   
   def update
-    #debugger
-    #puts "from: #{@from_pos} to: #{@to_pos}"
+    if @computer_playing && @computer_turn
+      @game.player2.play_turn(@board)
+      @computer_turn = false
+      @game.change_player
+    end
   end
   
   def button_down(id)
@@ -34,6 +39,7 @@ class Window < Gosu::Window
       @game.change_player
       @from_pos = nil      
       @message = "Selected position: "
+      @computer_turn = true if @computer_playing
     end
     @message = "Check!" if @board.in_check?(@game.current_player.color)
     @message = "CHECKMATE. #{@board.checkmate?} loses" if @board.checkmate?

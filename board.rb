@@ -132,12 +132,12 @@ class Board
   
   def parse_position(pos)
     if pos.empty? || pos.size != 2
-      raise 'Something went wrong'
+      raise ArgumentError, "invalid format, correct format is 'a7', 'f3', etc..."
     end
     
     col,row = pos.split("")
     if !(('a'..'h').include?(col) && (1..8).include?(row.to_i))
-      raise 'Something went wrong (right length though)'
+      raise ArgumentError, "invalid format, correct format is 'a7', 'f3', etc..."
     else
       col = CHESS_COLUMNS[col]
       row = 8 - row.to_i 

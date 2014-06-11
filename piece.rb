@@ -14,6 +14,7 @@ class Piece
     @position = position
     @color = color
     @image =  Gosu::Image.new(window, "nil.png",false) unless window.nil?
+    @value = nil
   end
   
   def self.max_distance
@@ -81,6 +82,8 @@ class Piece
   def pix_y
     @position[0] * 80 + 8
   end
+  
+
 end
 
 

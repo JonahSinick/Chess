@@ -4,12 +4,12 @@ require './fancy_board.rb'
 require 'debugger'
 
 class Game
-  attr_accessor :board, :current_player
-  def initialize(player1 = Human.new(:white), player2 = Human.new(:black))
+  attr_accessor :board, :current_player, :player2
+  def initialize(player1 = Human.new(:white), player2 = Computer.new(:black))
     @player1 = player1
     @player2 = player2
     #debugger
-    @window = Window.new(self)
+    @window = Window.new(self, player2.is_a?(Computer))
     @board = Board.new(@window)
     @current_player = @player1
     @window.board = @board    
@@ -42,21 +42,26 @@ class Human
     puts "You are in check" if board.in_check?(@color)
     begin
       from = board.parse_position(gets.chomp)
-    rescue 
-      puts "Not a valid position. Correct format 'a4', 'd7', etc..."
+    rescue ArgumentError => err
+      #puts "Not a valid position. Correct format 'a4', 'd7', etc..."
+      puts err
       retry
     end
 
     begin
       puts "Enter the square you want to move to."
-     # debugger
+      # debugger
       to = board.parse_position(gets.chomp)
-    rescue 
-      puts "Not a valid position. Correct format 'a4', 'd7', etc..."
+    rescue ArgumentError => err
+      puts err
+      #puts "Not a valid position. Correct format 'a4', 'd7', etc..."
       retry
     end
     
-    if board[from].valid_moves.include?(to)
+    if !board[from].nil? &&
+      board[from].color == @color &&
+      board[from].valid_moves.include?(to)
+      
       board[from].move(to)
     else
       puts "Invalid move"
@@ -66,16 +71,51 @@ class Human
   
 end
 
-if __FILE__ == $PROGRAM_NAME
-  if ARGV.empty?
-    Game.new.board.show
-  else
-    Game.new.play
+class Computer
+  attr_accessor :color
+  def initialize(color)
+    @color = color
+  end
+  
+  def other_color
+    if @color == :white
+      :black
+    else
+      :white
+    end
+  end
+  
+  def play_turn(board)
+    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+    potential_moves = []
+    valid_pieces.each do |piece|
+      board.pieces(other_color).each do |enemy_piece|
+        if piece.valid_moves.include?(enemy_piece.position)
+          potential_moves << [piece, enemy_piece.position]
+        end
+      end
+    end
+    if !potential_moves.empty?
+      pair = potential_moves.sample  
+      pair[0].move(pair[1])
+    else
+      random_move(board)
+    end
+  end
+       
+  def random_move(board)
+    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+    piece = valid_pieces.sample
+    move = piece.valid_moves.sample
+    piece.move(move)    
+  end
+  
+  if __FILE__ == $PROGRAM_NAME
+    if ARGV.empty?
+      Game.new.board.show
+    else
+      Game.new.play
+    end
   end
 end
-  
-  
-  
-  
-
   

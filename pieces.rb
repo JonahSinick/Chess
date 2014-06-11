@@ -11,6 +11,7 @@ class Bishop < Piece
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "b.png",false)
     end
+    @value = 3
   end
   
   def move_dirs
@@ -35,6 +36,7 @@ class Rook < Piece
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "r.png",false)
     end
+    @value = 5
   end
   
   def move_dirs
@@ -60,6 +62,7 @@ class Queen < Piece
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "q.png",false)
     end
+    @value = 9
   end
   
   def move_dirs
@@ -111,6 +114,7 @@ class Knight < Piece
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "n.png",false)
     end
+    @value = 3
   end
     
   def move_dirs
@@ -138,6 +142,7 @@ class Pawn < Piece
     end
     @at_initial_position = true
     @direction = (color == :black ? 1 : -1)
+    @value = 1
   end
   
   def move(pos)
