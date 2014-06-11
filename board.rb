@@ -6,7 +6,22 @@ class Board
   def initialize
     @board = Array.new(8) { Array.new(8) }
     place_pieces
+    create_chess_columns
   end
+  
+  CHESS_COLUMNS = {}
+  
+  def create_chess_columns
+    CHESS_COLUMNS["a"] = 0
+    CHESS_COLUMNS["b"] = 1
+    CHESS_COLUMNS["c"] = 2
+    CHESS_COLUMNS["d"] = 3
+    CHESS_COLUMNS["e"] = 4
+    CHESS_COLUMNS["f"] = 5
+    CHESS_COLUMNS["g"] = 6
+    CHESS_COLUMNS["h"] = 7
+  end
+    
   
   def place_pieces
     @board[0][0] = Rook.new(self, [0,0], :black)
@@ -102,6 +117,31 @@ class Board
   def pieces(color)
     @board.flatten.select {|piece| !piece.nil? && piece.color == color}
   end
-
   
+  def parse_position(pos)
+    if pos.empty? || pos.size != 2
+      raise 'Something went wrong'
+    end
+    
+    col,row = pos.split("")
+    if !(('a'..'h').include?(col) && (1..8).include?(row.to_i))
+      raise 'Something went wrong (right length though)'
+    else
+      col = CHESS_COLUMNS[col]
+      row = 8 - row.to_i 
+      [row, col]
+    end
+  end 
+  
+  def display 
+    board_str = []
+    board_str << "  " + ('a'..'h').map{ |ltr| ltr.colorize(:red) }.to_a.join(' ')
+    
+    @board.each_with_index do |row, ndx|
+      board_str << "#{8 - ndx} ".colorize(:red) + row.map do |tile|
+        tile.nil? ? "*" : tile.to_s
+      end.join(" ")
+    end
+    puts board_str.join("\n")
+  end 
 end

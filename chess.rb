@@ -1,6 +1,7 @@
 require './board.rb'
 
 class Game
+  attr_accessor :board
   def initialize(player1 = Human.new(:white), player2 = Human.new(:black))
     @player1 = player1
     @player2 = player2
@@ -18,34 +19,39 @@ class Game
 end
 
 class Human
-  attr_acccessor :color
+  attr_accessor :color
   def initialize(color)
     @color = color
   end
   
   def play_turn(board)
-    puts board
-    puts "It's #{@color}'s turn. Make a move"
-    gets.chomp
+    board.display
+
+    puts "It's #{@color}'s turn. Choose a piece to move."
+    puts "You are in check" if board.in_check?(@color)
+    begin
+      from = board.parse_position(gets.chomp)
+    rescue 
+      puts "Not a valid position. Correct format 'a4', 'd7', etc..."
+      retry
+    end
+
+    begin
+      puts "Enter the square you want to move to."
+      to = board.parse_position(gets.chomp)
+    rescue 
+      puts "Not a valid position. Correct format 'a4', 'd7', etc..."
+      retry
+    end
+    
+    if board[from].valid_moves.include?(to)
+      board[from].move(to)
+    else
+      puts "Invalid move"
+      play_turn(board)
+    end 
   end
   
 end
 
-class Display
-  def conversion(string)
-    h = {}
-    h["a"] = 0
-    h["b"] = 1
-    h["c"] = 2
-    h["d"] = 3
-    h["e"] = 4
-    h["f"] = 5
-    h["g"] = 6
-    h["h"] = 7
-    arr = string.split("")
-    h[arr[0]] = col
-    7 - h[arr[1].to_i] = 
-    "a4a5" --- > [0,3] moves to [0,2]
-    
-    
   
