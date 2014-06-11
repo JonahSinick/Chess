@@ -21,11 +21,11 @@ class Piece
   end
   
   def move(pos)
-    if self.valid_moves.include?(pos)
+#    if self.valid_moves.include?(pos)
       @board[@position] = nil
       @position = pos
       @board[pos] = self
-    end
+ #   end
   end
   
   def in_board?(x, y)

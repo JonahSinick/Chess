@@ -6,14 +6,15 @@ require 'debugger'
 class Window < Gosu::Window
   attr_accessor :knight, :board
   def initialize(game)
-    super(640, 674, false, 100)
+    super(640, 700, false, 100)
     
     @background_image = Gosu::Image.new(self, "board.png", true)
     @from_pos = nil
-    @to_pos = nil
-    @white_banner = Gosu::Image.new(self, "white_to_move.png", true)
-    @black_banner = Gosu::Image.new(self, "black_to_move.png", true)
+    @white_banner = Gosu::Image.new(self, "white_move.png", true)
+    @black_banner = Gosu::Image.new(self, "black_move.png", true)
     @game = game
+    @text = Gosu::Font.new(self, 'Verdana', 21)
+    @message = "Selected position: "
   end
   
   def update
@@ -23,25 +24,34 @@ class Window < Gosu::Window
   
   def button_down(id)
     return if id != Gosu::MsLeft
-    if @from_pos.nil?
-       @from_pos = pixel_to_board(self.mouse_x, self.mouse_y)
-    else
-      @to_pos = pixel_to_board(self.mouse_x, self.mouse_y)  
-      @board[@from_pos].move(@to_pos) unless @board[@from_pos].nil?
+     pos = pixel_to_board(self.mouse_x, self.mouse_y)
+     if @board[pos].nil?
+       @from_pos = nil
+       @message = "Selected position: "
+       return
+    elsif @board[pos].color == @game.current_player.color
+       @from_pos = pos
+        @message = "Selected position: " +
+        "#{@board[@from_pos].class.to_s.downcase} #{to_chess(@from_pos)}"
+    elsif !@from_pos.nil? && @board[@from_pos].is_valid?(pos)
+      @board[@from_pos].move(pos)
       @game.change_player
-      @to_pos = nil
-      @from_pos = nil
+      @from_pos = nil      
+      @message = "Selected position: "
     end
+   
+    @message = "CHECKMATE. #{@board.checkmate?} loses" if @board.checkmate?
   end
   
   def draw        
     @background_image.draw(0, 0, 0)
     @board.draw
     if @game.current_player.color == :white
-      @white_banner.draw(0, 640, 0)
+      @white_banner.draw(0.2, 636, 0)
     else
-      @black_banner.draw(0, 640, 0.1)
+      @black_banner.draw(0.2, 636, 0.1)
     end
+    @text.draw( @message, 262, 672, 1)
   end
   
   def move_knight(x, y)
@@ -62,6 +72,13 @@ class Window < Gosu::Window
   
   def board_to_pixel(pos)
     pos.map{ |coord| coord * 80 + 8 }
+  end
+  
+  def to_chess(pos)
+    file, row = pos
+    row = 8 - row
+    file = ('a'..'h').to_a[file]
+    file + row.to_s
   end
   
 end

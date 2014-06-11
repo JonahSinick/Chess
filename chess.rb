@@ -49,6 +49,7 @@ class Human
 
     begin
       puts "Enter the square you want to move to."
+     # debugger
       to = board.parse_position(gets.chomp)
     rescue 
       puts "Not a valid position. Correct format 'a4', 'd7', etc..."
