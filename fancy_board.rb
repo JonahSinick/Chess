@@ -25,11 +25,7 @@ class Window < Gosu::Window
   def button_down(id)
     return if id != Gosu::MsLeft
      pos = pixel_to_board(self.mouse_x, self.mouse_y)
-     if @board[pos].nil?
-       @from_pos = nil
-       @message = "Selected position: "
-       return
-    elsif @board[pos].color == @game.current_player.color
+    if !@board[pos].nil? && @board[pos].color == @game.current_player.color
        @from_pos = pos
         @message = "Selected position: " +
         "#{@board[@from_pos].class.to_s.downcase} #{to_chess(@from_pos)}"
@@ -39,7 +35,7 @@ class Window < Gosu::Window
       @from_pos = nil      
       @message = "Selected position: "
     end
-   
+    @message = "Check!" if @board.in_check?(@game.current_player.color)
     @message = "CHECKMATE. #{@board.checkmate?} loses" if @board.checkmate?
   end
   
