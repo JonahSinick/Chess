@@ -84,7 +84,7 @@ class Computer
       :white
     end
   end
-  
+
   def play_turn(board)
     valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
     potential_moves = []
@@ -102,6 +102,7 @@ class Computer
       random_move(board)
     end
   end
+
        
   def random_move(board)
     valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
@@ -109,24 +110,20 @@ class Computer
     move = piece.valid_moves.sample
     piece.move(move)    
   end
-  
-  def check_move(board)
-    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
-    valid_pieces.each do |piece|
-      board.pieces(other_color).each do |enemy_piece|
-        if piece.valid_moves.include?(enemy_piece.position)
-          potential_moves << [piece, enemy_piece.position]
-        end
-      end
-    
-    
-  
-  if __FILE__ == $PROGRAM_NAME
-    if ARGV.empty?
-      Game.new.board.show
-    else
-      Game.new.play
-    end
+
+  def is_valid?(pos)
+    test_board = @board.dup
+    duplicate_piece = test_board[@position]
+    duplicate_piece.move(pos)
+    !test_board.in_check?(@color)
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  if ARGV.empty?
+    Game.new.board.show
+  else
+    Game.new.play
   end
 end
   
