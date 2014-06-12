@@ -5,7 +5,7 @@ require 'debugger'
 
 class Game
   attr_accessor :board, :current_player, :player2
-  def initialize(player1 = Computer.new(:white), player2 = Computer.new(:black))
+  def initialize(player1 = Computer.new(:white, :max_min), player2 = Computer.new(:black, :max_min))
     @player1 = player1
     @player2 = player2
     #debugger
@@ -88,32 +88,36 @@ class Computer
 
   def play_turn(board)
     # begin
-      from_to = nil
-      if @strategy == :point
+    from_to = nil
+    if @strategy == :point
       # 
-        from_to ||= point_move(board)
-      end
-      if (@strategy == :aggro)
-        #from_to ||= check_move(board) if board.pieces(other_color).size < 5
-        from_to ||= aggressive_move(board)         
-      end
+      from_to ||= point_move(board)
+    end
+    if (@strategy == :aggro)
+      #from_to ||= check_move(board) if board.pieces(other_color).size < 5
+      from_to ||= aggressive_move(board)         
+    end
+      
+    if (@strategy == :max_min)
+      from_to ||= max_min_move(board)
+    end
       from_to ||= random_move(board)
       from_to[0].move(from_to[1])
-    # rescue NoMethodError => err
-#       debugger
-#     end
+      # rescue NoMethodError => err
+      #       debugger
+      #     end
   end
 
        
   def random_move(board)
-    piece = valid_pieces(board).sample
+    piece = valid_pieces(board, @color).sample
     move = piece.valid_moves.sample
     [piece, move]    
   end
   
   def aggressive_move(board)
     potential_moves = []
-    valid_pieces(board).each do |piece|
+    valid_pieces(board, @color).each do |piece|
       board.pieces(other_color).each do |enemy_piece|
         if piece.valid_moves.include?(enemy_piece.position)
           potential_moves << [piece, enemy_piece.position]
@@ -123,8 +127,8 @@ class Computer
     potential_moves.sample  
   end
   
-  def valid_pieces(board)
-    board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+  def valid_pieces(board, color)
+    board.pieces(color).select {|piece| !piece.valid_moves.empty?}
   end
   # 
   # def is_valid?(pos)
@@ -136,7 +140,7 @@ class Computer
   
   def check_move(board)
     check_moves = []
-    valid_pieces(board).each do |piece|
+    valid_pieces(board, @color).each do |piece|
       piece.valid_moves.each do |pos|
         check_moves << [piece, pos] if will_be_in_check?(piece, pos, board)
       end
@@ -146,9 +150,9 @@ class Computer
   
   def point_move(board)
     point_moves = []
-    valid_pieces(board).each do |piece|
+    valid_pieces(board, @color).each do |piece|
       piece.valid_moves.each do |pos|
-        score = move_score(piece, pos, board)
+        score = move_score(piece, pos, board, @color)
         point_moves << [piece, pos, score]
       end
     end
@@ -159,12 +163,47 @@ class Computer
     moves.sample[0..1] 
   end
   
-  def move_score(piece, pos, board)
+  def max_half_step_points(board, color)
+    point_moves = []
+    valid_pieces(board, color).each do |piece|
+      piece.valid_moves.each do |pos|
+        score = move_score(piece, pos, board, color)
+        point_moves << [piece, pos, score]
+      end
+    end
+    best_move = point_moves.max_by { |piece, pos, score| score }
+    if best_move.nil?
+      -100000
+    else
+      best_move[2]
+    end
+  end
+    
+  
+  def move_score(piece, pos, board, color)
+    simulate_move(piece, pos, board).points(color)
+  end
+  
+  def max_min_move(board)
+    master_point_array = []
+    valid_pieces(board, @color).each do |piece|
+      piece.valid_moves.each do |pos|
+        test_board = simulate_move(piece, pos, board)
+        master_point_array << [piece, pos, max_half_step_points(test_board, other_color)]
+      end
+    end
+    best_move = master_point_array.min_by { |piece, pos, score| score }
+    moves = master_point_array.select { |piece, pos, score| score == best_move[2] }
+    moves.sample[0..1]
+  end
+    
+  def simulate_move(piece, pos, board)
     test_board = board.dup
     dup_piece = test_board[piece.position]
     dup_piece.move(pos)
-    test_board.points(@color)
+    test_board
   end
+  
   
   def will_be_in_check?(piece, pos, board)
     test_board = board.dup
