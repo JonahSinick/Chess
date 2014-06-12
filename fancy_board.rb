@@ -17,9 +17,24 @@ class Window < Gosu::Window
     @message = "Selected position: "
     @computer_playing = computer_playing
     @computer_turn = false
+    @all_computer = true
   end
   
   def update
+    if @board.checkmate?
+      @message = "CHECKMATE. #{@board.checkmate?} loses"
+    end
+    
+    if @board.stalemate?(@game.current_player.color) && !@board.checkmate?
+      @message = "STALEMATE. It's a draw!"
+    end
+    
+    
+    if @all_computer && !@board.checkmate?
+      @game.current_player.play_turn(@board)
+      @game.change_player
+    end
+    
     if @computer_playing && @computer_turn
       @game.player2.play_turn(@board)
       @computer_turn = false
@@ -28,7 +43,7 @@ class Window < Gosu::Window
   end
   
   def button_down(id)
-    return if id != Gosu::MsLeft
+    return if id != Gosu::MsLeft || @all_computer
      pos = pixel_to_board(self.mouse_x, self.mouse_y)
     if !@board[pos].nil? && @board[pos].color == @game.current_player.color
        @from_pos = pos

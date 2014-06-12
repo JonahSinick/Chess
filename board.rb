@@ -70,6 +70,7 @@ class Board
   
   def [](pos)
     row, col = pos
+    return nil unless (0..7).include?(row) && (0..7).include?(col)
     @board[row][col]
   end
   
@@ -84,6 +85,15 @@ class Board
       end
     end
     false
+  end
+  
+  def stalemate?(color)
+    stalemate = false
+    valid_pieces = self.pieces(color).select {|piece| !piece.valid_moves.empty?}
+    if valid_pieces.empty? && !in_check?(color)
+      stalemate = true 
+    end
+    stalemate
   end
   
   def king(color)

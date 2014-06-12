@@ -181,9 +181,13 @@ class Pawn < Piece
     two_forward = [@position[0] + (2 * @direction), @position[1] ]
     if @board[one_forward].nil?
       positions << one_forward
+      begin
       if @at_initial_position && @board[two_forward].nil?
         positions << two_forward
       end
+    rescue NoMethodError => err
+      debugger
+    end
     end
     diags.each do |diag|
       if !@board[diag].nil? && @board[diag].color != @color

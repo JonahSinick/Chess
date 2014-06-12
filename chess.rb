@@ -5,7 +5,7 @@ require 'debugger'
 
 class Game
   attr_accessor :board, :current_player, :player2
-  def initialize(player1 = Human.new(:white), player2 = Computer.new(:black))
+  def initialize(player1 = Computer.new(:white), player2 = Computer.new(:black))
     @player1 = player1
     @player2 = player2
     #debugger
