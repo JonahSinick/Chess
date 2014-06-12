@@ -166,4 +166,18 @@ class Board
     end
     puts board_str.join("\n")
   end 
+  
+  def other_color(color)
+    if color == :white
+      :black
+    else
+      :white
+    end
+  end
+  
+  def points(color)
+    our_points = pieces(color).inject(0) { |s, piece| piece.value + s}
+    their_points = pieces(other_color(color)).inject(0) { |s, piece| piece.value + s}
+    our_points - their_points
+  end 
 end

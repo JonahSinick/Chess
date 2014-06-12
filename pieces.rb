@@ -2,6 +2,7 @@ load "./piece.rb"
 require "colorize"
 require 'debugger'
 class Bishop < Piece
+  attr_reader :value
   @max_distance = 8
 
   def initialize(board, position, color, window)
@@ -27,6 +28,7 @@ class Bishop < Piece
 end
 
 class Rook < Piece
+  attr_reader :value
   @max_distance = 8
   
   def initialize(board, position, color, window)
@@ -53,6 +55,7 @@ class Rook < Piece
 end
 
 class Queen < Piece
+  attr_reader :value
   @max_distance = 8
   
   def initialize(board, position, color, window)
@@ -80,6 +83,8 @@ end
 
 
 class King < Piece
+  attr_reader :value
+  
   @max_distance = 1
 
   def initialize(board, position, color, window)
@@ -89,6 +94,7 @@ class King < Piece
     if !window.nil?
       @image =  Gosu::Image.new(window, color.to_s[0] + "k.png",false)
     end
+    @value = 15
   end
   
   def move_dirs
@@ -105,6 +111,7 @@ class King < Piece
 end
 
 class Knight < Piece
+  attr_reader :value
   @max_distance = 1
   
   def initialize(board, position, color, window)
@@ -131,7 +138,7 @@ class Knight < Piece
 end
 
 class Pawn < Piece
-  
+  attr_reader :value
   
   def initialize(board, position, color, window)
     @board = board

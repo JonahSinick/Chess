@@ -73,8 +73,9 @@ end
 
 class Computer
   attr_accessor :color
-  def initialize(color)
+  def initialize(color, strategy = :aggro)
     @color = color
+    @strategy = strategy
   end
   
   def other_color
@@ -86,37 +87,92 @@ class Computer
   end
 
   def play_turn(board)
-    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+    # begin
+      from_to = nil
+      if @strategy == :point
+      # 
+        from_to ||= point_move(board)
+      end
+      if (@strategy == :aggro)
+        #from_to ||= check_move(board) if board.pieces(other_color).size < 5
+        from_to ||= aggressive_move(board)         
+      end
+      from_to ||= random_move(board)
+      from_to[0].move(from_to[1])
+    # rescue NoMethodError => err
+#       debugger
+#     end
+  end
+
+       
+  def random_move(board)
+    piece = valid_pieces(board).sample
+    move = piece.valid_moves.sample
+    [piece, move]    
+  end
+  
+  def aggressive_move(board)
     potential_moves = []
-    valid_pieces.each do |piece|
+    valid_pieces(board).each do |piece|
       board.pieces(other_color).each do |enemy_piece|
         if piece.valid_moves.include?(enemy_piece.position)
           potential_moves << [piece, enemy_piece.position]
         end
       end
     end
-    if !potential_moves.empty?
-      pair = potential_moves.sample  
-      pair[0].move(pair[1])
-    else
-      random_move(board)
+    potential_moves.sample  
+  end
+  
+  def valid_pieces(board)
+    board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
+  end
+  # 
+  # def is_valid?(pos)
+  #   test_board = @board.dup
+  #   duplicate_piece = test_board[@position]
+  #   duplicate_piece.move(pos)
+  #   !test_board.in_check?(@color)
+  # end
+  
+  def check_move(board)
+    check_moves = []
+    valid_pieces(board).each do |piece|
+      piece.valid_moves.each do |pos|
+        check_moves << [piece, pos] if will_be_in_check?(piece, pos, board)
+      end
     end
+    check_moves.sample
   end
-
-       
-  def random_move(board)
-    valid_pieces = board.pieces(@color).select {|piece| !piece.valid_moves.empty?}
-    piece = valid_pieces.sample
-    move = piece.valid_moves.sample
-    piece.move(move)    
+  
+  def point_move(board)
+    point_moves = []
+    valid_pieces(board).each do |piece|
+      piece.valid_moves.each do |pos|
+        score = move_score(piece, pos, board)
+        point_moves << [piece, pos, score]
+      end
+    end
+    #max by here
+    best_move = point_moves.max_by { |piece, pos, score| score }
+    
+    moves = point_moves.select { |piece, pos, score| score == best_move[2] }
+    moves.sample[0..1] 
   end
-
-  def is_valid?(pos)
-    test_board = @board.dup
-    duplicate_piece = test_board[@position]
-    duplicate_piece.move(pos)
-    !test_board.in_check?(@color)
+  
+  def move_score(piece, pos, board)
+    test_board = board.dup
+    dup_piece = test_board[piece.position]
+    dup_piece.move(pos)
+    test_board.points(@color)
   end
+  
+  def will_be_in_check?(piece, pos, board)
+    test_board = board.dup
+    dup_piece = test_board[piece.position]
+    dup_piece.move(pos)
+    test_board.in_check?(other_color)
+  end
+  
 end
 
 if __FILE__ == $PROGRAM_NAME

@@ -4,7 +4,7 @@ require './pieces.rb'
 
 class Piece
   
-  attr_accessor :board, :position, :color
+  attr_accessor :board, :position, :color, :value
   DIAGONALS =  [ [-1, -1], [-1, 1], [1, -1], [1, 1] ]
   HORVERTS = [ [0, -1], [0, 1], [-1, 0], [1, 0] ]
   
@@ -15,7 +15,7 @@ class Piece
     @color = color
     @image =  Gosu::Image.new(window, "nil.png",false) unless window.nil?
     @window = window
-    @value = nil
+    @value = 0
   end
   
   def self.max_distance

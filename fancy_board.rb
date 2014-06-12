@@ -18,15 +18,20 @@ class Window < Gosu::Window
     @computer_playing = computer_playing
     @computer_turn = false
     @all_computer = true
+    @game_over = false
   end
   
   def update
-    if @board.checkmate?
+    return if @game_over
+    
+    if @board.checkmate? 
       @message = "CHECKMATE. #{@board.checkmate?} loses"
+      @game_over = true
     end
     
     if @board.stalemate?(@game.current_player.color) && !@board.checkmate?
       @message = "STALEMATE. It's a draw!"
+      @game_over = true
     end
     
     
@@ -40,6 +45,8 @@ class Window < Gosu::Window
       @computer_turn = false
       @game.change_player
     end
+    
+    # sleep(0.4)
   end
   
   def button_down(id)
